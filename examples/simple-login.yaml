@@ -1,0 +1,10 @@
+platformUrl: https://openam.example.com
+realm: alpha
+journeyName: SimpleLogin
+
+steps:
+  step1:
+    IDToken1: aaron.wang
+
+  step2:
+    IDToken2: MySecret123
