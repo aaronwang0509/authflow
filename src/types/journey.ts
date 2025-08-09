@@ -27,4 +27,6 @@ export interface JourneyResult {
   tokenId?: string;
   successUrl?: string;
   error?: string;
+  authId?: string;
+  callbacks?: Callback[];
 }

@@ -10,8 +10,8 @@ export function createRunCommand(): Command {
   command
     .description('Run an authentication journey using a YAML config file')
     .argument('<file>', 'Path to the YAML configuration file')
-    .option('-v, --verbose', 'Enable verbose logging', false)
-    .option('-s, --step-by-step', 'Run in step-by-step mode', false)
+    .option('--verbose', 'Enable verbose logging', false)
+    .option('-s, --step', 'Run in interactive step-by-step mode', false)
     .option('-t, --timeout <ms>', 'Request timeout in milliseconds', '30000')
     .action(async (file: string, options) => {
       const logger = new Logger(options.verbose);
@@ -35,7 +35,7 @@ export function createRunCommand(): Command {
         configParser.validateConfig(journeyConfig);
         
         // Run the journey
-        const result = await journeyRunner.runJourney(journeyConfig);
+        const result = await journeyRunner.runJourney(journeyConfig, options.step);
         
         if (result.success) {
           logger.success('Journey completed successfully');

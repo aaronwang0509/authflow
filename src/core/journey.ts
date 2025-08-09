@@ -2,6 +2,7 @@ import { ForgeRockApiClient } from './api-client';
 import { ConfigParser } from './config';
 import { Logger } from '../utils/logger';
 import { JourneyConfig, JourneyResult, Callback } from '../types/journey';
+import * as readline from 'readline';
 
 export class JourneyRunner {
   private apiClient: ForgeRockApiClient;
@@ -14,7 +15,7 @@ export class JourneyRunner {
     this.configParser = new ConfigParser(logger);
   }
 
-  async runJourney(config: JourneyConfig): Promise<JourneyResult> {
+  async runJourney(config: JourneyConfig, stepMode: boolean = false): Promise<JourneyResult> {
     try {
       this.logger.info(`Starting journey: ${config.journeyName}`);
       
@@ -25,6 +26,17 @@ export class JourneyRunner {
         realm: config.realm,
         journeyName: config.journeyName
       });
+
+      if (stepMode) {
+        this.logger.success('Journey initialized!');
+        this.logger.info(`Auth ID: ${initResponse.authId}`);
+        this.logger.info(`Callbacks received: ${initResponse.callbacks.length}`);
+        
+        const shouldContinue = await this.promptUser('Continue to next step?');
+        if (!shouldContinue) {
+          return { success: false, error: 'User cancelled journey' };
+        }
+      }
       
       let currentAuthId = initResponse.authId;
       let currentCallbacks = initResponse.callbacks;
@@ -58,6 +70,17 @@ export class JourneyRunner {
             successUrl: continueResponse.successUrl
           };
         }
+
+        if (stepMode) {
+          this.logger.success(`Step ${stepNumber - 1} completed!`);
+          this.logger.info(`New Auth ID: ${continueResponse.authId}`);
+          this.logger.info(`Callbacks received: ${continueResponse.callbacks?.length || 0}`);
+          
+          const shouldContinue = await this.promptUser('Continue to next step?');
+          if (!shouldContinue) {
+            return { success: false, error: 'User cancelled journey' };
+          }
+        }
         
         // Continue with next step
         currentAuthId = continueResponse.authId!;
@@ -75,6 +98,7 @@ export class JourneyRunner {
       };
     }
   }
+
   
   private processCallbacks(callbacks: Callback[], stepConfig: Record<string, string>): Callback[] {
     // TODO: Implement intelligent callback matching
@@ -92,5 +116,22 @@ export class JourneyRunner {
         };
       })
     }));
+  }
+
+  private async promptUser(question: string): Promise<boolean> {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    return new Promise((resolve) => {
+      rl.question(`${question} (Y/n): `, (answer) => {
+        rl.close();
+        // Default to yes if empty or starts with 'y', only no if explicitly 'n' or 'no'
+        const lowerAnswer = answer.toLowerCase().trim();
+        resolve(lowerAnswer === '' || lowerAnswer === 'y' || lowerAnswer === 'yes' || 
+               (lowerAnswer !== 'n' && lowerAnswer !== 'no'));
+      });
+    });
   }
 }

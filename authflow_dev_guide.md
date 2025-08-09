@@ -294,14 +294,74 @@ Build minimal runnable functionality first, then add features incrementally with
 
 ---
 
+## Development Commands
+
+### NPM Scripts
+```bash
+# Development
+npm install                    # Install dependencies
+npm run dev -- --help        # Run CLI in development mode with TypeScript
+npm run dev -- run examples/simple-login.yaml  # Test with example journey
+npm run dev -- run your-journey.yaml --step --verbose  # Interactive debug mode
+
+# Building
+npm run build                 # Compile TypeScript to JavaScript (dist/)
+npm run start -- --help      # Run compiled JavaScript version
+
+# Binary Creation
+npm run build:binary          # Create single binary → build/authflow
+npm run build:mac-arm         # Create macOS ARM64 binary → build/authflow
+npm run build:all             # Create all platform binaries → build/authflow-*
+
+# Testing & Quality
+npm test                      # Run tests
+npm run test:watch           # Run tests in watch mode
+npm run lint                 # Check code style
+npm run format               # Auto-format code
+```
+
+### Binary Usage
+```bash
+# After npm run build:mac-arm
+./build/authflow --help
+./build/authflow -v
+./build/authflow run examples/simple-login.yaml
+./build/authflow run your-journey.yaml --step
+./build/authflow run your-journey.yaml --verbose
+./build/authflow validate your-journey.yaml
+
+# After npm run build:all
+./build/authflow-macos-arm64 -v     # macOS Apple Silicon
+./build/authflow-macos-x64 -v       # macOS Intel
+./build/authflow-linux-x64 -v       # Linux x64
+./build/authflow-win-x64.exe -v     # Windows x64
+```
+
+### CLI Commands Available
+```bash
+authflow -v                           # Show version
+authflow version                      # Show version (command)
+authflow run <file>                   # Run journey automatically
+authflow run <file> --step            # Interactive step-by-step (default Yes)
+authflow run <file> --verbose         # Show full HTTP request/response
+authflow run <file> --step --verbose  # Interactive with full details
+authflow validate <file>              # Validate YAML config
+```
+
+---
+
 ## Current Status
 
-✅ **Complete project structure created**
-- TypeScript configuration
-- All source files with placeholders
-- Test framework setup
-- Example YAML files
-- Modern .gitignore
+✅ **MVP Complete and Functional**
+- ✅ Full TypeScript project structure
+- ✅ CLI interface with commander.js
+- ✅ YAML config parsing and validation
+- ✅ ForgeRock API integration (init + continue)
+- ✅ End-to-end journey execution
+- ✅ Interactive step-by-step mode
+- ✅ Verbose HTTP logging
+- ✅ Binary compilation for all platforms
+- ✅ Comprehensive error handling
 
-🎯 **Next: Start Phase 1, Step 1** - Install dependencies and test basic structure
+🎯 **Ready for Phase 2** - Advanced features and smart callback matching
 

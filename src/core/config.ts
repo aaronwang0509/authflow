@@ -46,4 +46,15 @@ export class ConfigParser {
     
     this.logger.debug('Config validation passed');
   }
+
+  async parse(filePath: string): Promise<JourneyConfig> {
+    const { FileUtils } = await import('../utils/file');
+    const fileUtils = new FileUtils(this.logger);
+    
+    const yamlConfig = await fileUtils.loadYamlConfig(filePath);
+    const journeyConfig = this.parseYamlToJourneyConfig(yamlConfig);
+    this.validateConfig(journeyConfig);
+    
+    return journeyConfig;
+  }
 }

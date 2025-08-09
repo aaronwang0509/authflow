@@ -32,4 +32,8 @@ export class Logger {
   step(stepNumber: number, message: string): void {
     console.log(chalk.cyan(`Step ${stepNumber}:`), message);
   }
+
+  isVerbose(): boolean {
+    return this.verbose;
+  }
 }
