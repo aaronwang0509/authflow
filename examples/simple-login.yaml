@@ -4,7 +4,7 @@ journeyName: SimpleLogin
 
 steps:
   step1:
-    IDToken1: aaron.wang
+    Username: john.doe
 
   step2:
-    IDToken2: MySecret123
+    Password: MySecret123
