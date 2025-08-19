@@ -53,8 +53,6 @@ pids/
 # Optional npm cache directory
 .npm
 
-# Journey configuration files (sensitive data)
-examples/*.yaml
-examples/*.yml
-# But allow example template
-!examples/simple-login.yaml
+# Real configuration files (sensitive data) - ignore all real configs
+configs/*/real/
+configs/*/*/real/

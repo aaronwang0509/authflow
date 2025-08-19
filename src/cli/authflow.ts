@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { createRunCommand } from './commands/run';
-import { createValidateCommand } from './commands/validate';
+import { createJourneyCommand } from './commands/journey';
+import { createTokenCommand } from './commands/token';
 import { createVersionCommand } from './commands/version';
 
 const program = new Command();
@@ -13,8 +13,8 @@ program
   .version('0.1.0', '-v, --version', 'output the version number');
 
 // Add commands
-program.addCommand(createRunCommand());
-program.addCommand(createValidateCommand());
+program.addCommand(createJourneyCommand());
+program.addCommand(createTokenCommand());
 program.addCommand(createVersionCommand());
 
 // Parse command line arguments
